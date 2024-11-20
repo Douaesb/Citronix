@@ -21,4 +21,7 @@ public class FieldDTO {
 
     @NotNull(message = "Farm ID is required")
     private Long farmId;
+
+    private int maxTreesAllowed;
+
 }

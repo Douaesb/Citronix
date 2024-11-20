@@ -3,6 +3,7 @@ package com.citron.citronix.service.impl;
 import com.citron.citronix.dto.TreeDTO;
 import com.citron.citronix.entity.Field;
 import com.citron.citronix.entity.Tree;
+import com.citron.citronix.exception.InvalidPlantationDateException;
 import com.citron.citronix.exception.ResourceNotFoundException;
 import com.citron.citronix.mapper.TreeMapper;
 import com.citron.citronix.repository.FieldRepository;
@@ -11,6 +12,7 @@ import com.citron.citronix.service.TreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +32,17 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public TreeDTO createTree(TreeDTO treeDTO) {
+        validatePlantationDate(treeDTO.getPlantationDate());
+
         Field field = fieldRepository.findById(treeDTO.getFieldId())
                 .orElseThrow(() -> new ResourceNotFoundException("Field not found with id: " + treeDTO.getFieldId()));
+
+        int currentTreeCount = treeRepository.countByFieldId(field.getId());
+        int maxTreesAllowed = field.getMaxTreesAllowed();
+
+        if (currentTreeCount >= maxTreesAllowed) {
+            throw new IllegalArgumentException("Field exceeds maximum tree density of " + maxTreesAllowed + " trees.");
+        }
 
         Tree tree = treeMapper.toEntity(treeDTO);
         tree.setField(field);
@@ -50,6 +61,8 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public TreeDTO updateTree(Long id, TreeDTO treeDTO) {
+        validatePlantationDate(treeDTO.getPlantationDate());
+
         Tree existingTree = treeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tree not found with id: " + id));
 
@@ -84,5 +97,16 @@ public class TreeServiceImpl implements TreeService {
                 .stream()
                 .map(treeMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    private void validatePlantationDate(LocalDate plantationDate) {
+        if (plantationDate == null) {
+            return;
+        }
+
+        int month = plantationDate.getMonthValue();
+        if (month < 3 || month > 5) {
+            throw new InvalidPlantationDateException("The plantation date must be between March and May.");
+        }
     }
 }

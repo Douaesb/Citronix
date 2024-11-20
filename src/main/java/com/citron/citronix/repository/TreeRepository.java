@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface TreeRepository extends JpaRepository<Tree, Long> {
     List<Tree> findByFieldId(Long fieldId);
+    int countByFieldId(Long fieldId);
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public interface FieldMapper {
 
     @Mapping(target = "farmId", source = "farm.id")
+    @Mapping(target = "maxTreesAllowed", expression = "java(field.getMaxTreesAllowed())")
     FieldDTO toDTO(Field field);
 
     @Mapping(target = "farm", ignore = true)

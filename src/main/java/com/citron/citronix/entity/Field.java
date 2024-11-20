@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "fields")
 @Getter
@@ -30,4 +33,14 @@ public class Field {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farm_id", nullable = false)
     private Farm farm;
+
+    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Tree> trees = new ArrayList<>();
+
+    @Transient
+    private int maxTreesAllowed;
+    public int getMaxTreesAllowed() {
+        return (int) (this.area * 100);
+    }
 }
