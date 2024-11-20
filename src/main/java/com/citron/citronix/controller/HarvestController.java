@@ -63,11 +63,4 @@ public class HarvestController {
         return harvestService.getAllHarvests();
     }
 
-    @ApiOperation(value = "Get all harvests by sale ID", response = List.class)
-    @GetMapping("/sale/{saleId}")
-    public List<HarvestDTO> getHarvestsBySaleId(
-            @ApiParam(value = "ID of the sale", required = true)
-            @PathVariable("saleId") Long saleId) {
-        return harvestService.getHarvestsBySaleId(saleId);
-    }
 }

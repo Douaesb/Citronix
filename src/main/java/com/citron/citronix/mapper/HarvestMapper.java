@@ -11,11 +11,10 @@ import org.springframework.stereotype.Component;
 
 public interface HarvestMapper {
 
-    @Mapping(target = "saleId", source = "sale.id")
     HarvestDTO toDTO(Harvest harvest);
 
-    @Mapping(target = "sale", ignore = true)
     @Mapping(target = "harvestDetails", ignore = true)
+    @Mapping(target = "sales", ignore = true)
     Harvest toEntity(HarvestDTO harvestDTO);
 
 

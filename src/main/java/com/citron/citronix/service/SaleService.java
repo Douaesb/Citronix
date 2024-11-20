@@ -11,4 +11,5 @@ public interface SaleService {
     SaleDTO updateSale(Long id, SaleDTO saleDTO);
     void deleteSale(Long id);
     List<SaleDTO> getAllSales();
+    List<SaleDTO> getSalesByHarvestId(Long harvestId);
 }

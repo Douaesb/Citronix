@@ -29,7 +29,8 @@ public class Harvest {
     @Builder.Default
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sale_id", nullable = false)
-    private Sale sale;
+
+    @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Sale> sales = new ArrayList<>();
 }

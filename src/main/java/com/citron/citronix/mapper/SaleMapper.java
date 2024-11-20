@@ -12,9 +12,11 @@ import org.springframework.stereotype.Component;
 
 public interface SaleMapper {
 
+    @Mapping(target = "harvestId", source = "harvest.id")
+    @Mapping(target = "revenue", expression = "java(sale.getUnitPrice() * sale.getQuantity())")
     SaleDTO toDTO(Sale sale);
 
-    @Mapping(target = "harvests", ignore = true)
+    @Mapping(target = "harvest", ignore = true)
     Sale toEntity(SaleDTO saleDTO);
 
 

@@ -15,7 +15,5 @@ public class HarvestDTO {
     @DecimalMin(value = "0.1", inclusive = true, message = "Quantity must be at least 0.1")
     private Double quantity;
 
-    @NotNull(message = "Sale ID is required")
-    private Long saleId;
 
 }

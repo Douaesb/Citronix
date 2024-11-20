@@ -15,5 +15,4 @@ public interface HarvestService {
 
     List<HarvestDTO> getAllHarvests();
 
-    List<HarvestDTO> getHarvestsBySaleId(Long saleId);
 }
