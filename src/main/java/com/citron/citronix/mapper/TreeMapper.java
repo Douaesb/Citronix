@@ -15,5 +15,7 @@ public interface TreeMapper {
     TreeDTO toDTO(Tree tree);
 
     @Mapping(target = "field", ignore = true)
+    @Mapping(target = "harvestDetails", ignore = true)
+
     Tree toEntity(TreeDTO treeDTO);
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface FarmMapper {
 
-    @Mapping(target = "fieldIds", source = "fields")
     FarmDTO toDTO(Farm farm);
 
     @Mapping(target = "fields", ignore = true)

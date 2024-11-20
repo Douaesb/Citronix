@@ -3,7 +3,6 @@ package com.citron.citronix.dto;
 import lombok.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor

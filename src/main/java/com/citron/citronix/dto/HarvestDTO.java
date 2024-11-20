@@ -2,7 +2,6 @@ package com.citron.citronix.dto;
 
 import lombok.*;
 import jakarta.validation.constraints.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +18,4 @@ public class HarvestDTO {
     @NotNull(message = "Sale ID is required")
     private Long saleId;
 
-    @NotEmpty(message = "Harvest detail IDs cannot be empty")
-    private List<Long> harvestDetailIds;
 }

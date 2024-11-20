@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public interface HarvestMapper {
 
     @Mapping(target = "saleId", source = "sale.id")
-    @Mapping(target = "harvestDetailIds", source = "harvestDetails")
     HarvestDTO toDTO(Harvest harvest);
 
     @Mapping(target = "sale", ignore = true)
