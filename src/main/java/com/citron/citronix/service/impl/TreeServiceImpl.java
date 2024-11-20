@@ -36,8 +36,10 @@ public class TreeServiceImpl implements TreeService {
         Tree tree = treeMapper.toEntity(treeDTO);
         tree.setField(field);
         Tree savedTree = treeRepository.save(tree);
-        return treeMapper.toDTO(savedTree);
-    }
+        TreeDTO savedTreeDTO = treeMapper.toDTO(savedTree);
+        savedTreeDTO.setAnnualProductivity(savedTree.getAnnualProductivity());
+
+        return savedTreeDTO;    }
 
     @Override
     public TreeDTO getTreeById(Long id) {

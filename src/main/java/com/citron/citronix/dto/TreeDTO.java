@@ -18,6 +18,8 @@ public class TreeDTO {
 
     private Integer age;
 
+    private Double annualProductivity;
+
     @NotNull(message = "Field ID is required")
     private Long fieldId;
 }

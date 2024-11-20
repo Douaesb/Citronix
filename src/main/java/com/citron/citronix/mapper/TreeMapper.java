@@ -12,6 +12,7 @@ public interface TreeMapper {
 
     @Mapping(source = "field.id", target = "fieldId")
     @Mapping(target = "age", expression = "java(tree.getAge())")
+    @Mapping(target = "annualProductivity", expression = "java(tree.getAnnualProductivity())")
     TreeDTO toDTO(Tree tree);
 
     @Mapping(target = "field", ignore = true)
