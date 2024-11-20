@@ -30,6 +30,7 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public FieldDTO createField(FieldDTO fieldDTO) {
+        validateFieldConstraints(fieldDTO);
         Farm farm = farmRepository.findById(fieldDTO.getFarmId())
                 .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + fieldDTO.getFarmId()));
 
@@ -48,18 +49,24 @@ public class FieldServiceImpl implements FieldService {
 
     @Override
     public FieldDTO updateField(Long id, FieldDTO fieldDTO) {
+
         Field existingField = fieldRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Field not found with id: " + id));
+
+        validateFieldConstraintsForUpdate(existingField, fieldDTO);
 
         Farm farm = farmRepository.findById(fieldDTO.getFarmId())
                 .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + fieldDTO.getFarmId()));
 
-        existingField.setName(fieldDTO.getName());
-        existingField.setArea(fieldDTO.getArea());
-        existingField.setFarm(farm);
+        Field updatedField = Field.builder()
+                .id(existingField.getId())
+                .name(fieldDTO.getName())
+                .area(fieldDTO.getArea())
+                .farm(farm)
+                .build();
 
-        Field updatedField = fieldRepository.save(existingField);
-        return fieldMapper.toDTO(updatedField);
+        Field savedField = fieldRepository.save(updatedField);
+        return fieldMapper.toDTO(savedField);
     }
 
     @Override
@@ -84,4 +91,56 @@ public class FieldServiceImpl implements FieldService {
                 .map(fieldMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    private void validateFieldConstraints(FieldDTO fieldDTO) {
+        Farm farm = farmRepository.findById(fieldDTO.getFarmId())
+                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + fieldDTO.getFarmId()));
+
+        int existingFieldCount = farm.getFields() == null ? 0 : farm.getFields().size();
+        if (existingFieldCount >= 10) {
+            throw new IllegalArgumentException("A farm cannot have more than 10 fields.");
+        }
+
+        double existingFieldsArea = farm.getFields() == null
+                ? 0.0
+                : farm.getFields().stream()
+                .mapToDouble(Field::getArea)
+                .sum();
+
+        double totalArea = existingFieldsArea + fieldDTO.getArea();
+
+        if (totalArea > farm.getArea()) {
+            throw new IllegalArgumentException("Total field area exceeds the area of the farm.");
+        }
+
+        double maxAllowedFieldArea = farm.getArea() * 0.5;
+        if (fieldDTO.getArea() > maxAllowedFieldArea) {
+            throw new IllegalArgumentException("A single field's area cannot exceed 50% of the farm's area.");
+        }
+    }
+
+    private void validateFieldConstraintsForUpdate(Field existingField, FieldDTO fieldDTO) {
+        Farm farm = farmRepository.findById(fieldDTO.getFarmId())
+                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + fieldDTO.getFarmId()));
+
+        double existingFieldsArea = farm.getFields() == null
+                ? 0.0
+                : farm.getFields().stream()
+                .filter(field -> !field.getId().equals(existingField.getId()))
+                .mapToDouble(Field::getArea)
+                .sum();
+
+        double totalArea = existingFieldsArea + fieldDTO.getArea();
+
+        if (totalArea > farm.getArea()) {
+            throw new IllegalArgumentException("Total field area exceeds the area of the farm.");
+        }
+
+        double maxAllowedFieldArea = farm.getArea() * 0.5;
+        if (fieldDTO.getArea() > maxAllowedFieldArea) {
+            throw new IllegalArgumentException("A single field's area cannot exceed 50% of the farm's area.");
+        }
+    }
+
+
 }
