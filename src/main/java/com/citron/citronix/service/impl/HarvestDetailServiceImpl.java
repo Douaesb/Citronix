@@ -3,6 +3,7 @@ package com.citron.citronix.service.impl;
 import com.citron.citronix.dto.HarvestDetailDTO;
 import com.citron.citronix.entity.Harvest;
 import com.citron.citronix.entity.HarvestDetail;
+import com.citron.citronix.entity.Season;
 import com.citron.citronix.entity.Tree;
 import com.citron.citronix.exception.ResourceNotFoundException;
 import com.citron.citronix.mapper.HarvestDetailMapper;
@@ -44,11 +45,23 @@ public class HarvestDetailServiceImpl implements HarvestDetailService {
         Harvest harvest = harvestRepository.findById(harvestDetailDTO.getHarvestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Harvest not found with id: " + harvestDetailDTO.getHarvestId()));
 
+        Season season = harvest.getSeason();
+        int year = harvest.getDate().getYear();
+
+        boolean isTreeHarvested = harvestDetailRepository.isTreeAlreadyHarvested(tree.getId(), season, year);
+        if (isTreeHarvested) {
+            throw new IllegalStateException("Tree with ID " + tree.getId() + " has already been harvested in " + season + " " + year);
+        }
+
         HarvestDetail harvestDetail = harvestDetailMapper.toEntity(harvestDetailDTO);
         harvestDetail.setTree(tree);
         harvestDetail.setHarvest(harvest);
 
         HarvestDetail savedHarvestDetail = harvestDetailRepository.save(harvestDetail);
+
+        harvest.updateQuantity();
+        harvestRepository.save(harvest);
+
         return harvestDetailMapper.toDTO(savedHarvestDetail);
     }
 
@@ -70,13 +83,16 @@ public class HarvestDetailServiceImpl implements HarvestDetailService {
         Harvest harvest = harvestRepository.findById(harvestDetailDTO.getHarvestId())
                 .orElseThrow(() -> new ResourceNotFoundException("Harvest not found with id: " + harvestDetailDTO.getHarvestId()));
 
-        existingHarvestDetail.setDate(harvestDetailDTO.getDate());
-        existingHarvestDetail.setSeason(harvestDetailDTO.getSeason());
+
         existingHarvestDetail.setQuantity(harvestDetailDTO.getQuantity());
         existingHarvestDetail.setTree(tree);
         existingHarvestDetail.setHarvest(harvest);
 
         HarvestDetail updatedHarvestDetail = harvestDetailRepository.save(existingHarvestDetail);
+
+        harvest.updateQuantity();
+        harvestRepository.save(harvest);
+
         return harvestDetailMapper.toDTO(updatedHarvestDetail);
     }
 
@@ -84,7 +100,13 @@ public class HarvestDetailServiceImpl implements HarvestDetailService {
     public void deleteHarvestDetail(Long id) {
         HarvestDetail harvestDetail = harvestDetailRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("HarvestDetail not found with id: " + id));
+
+        Harvest harvest = harvestDetail.getHarvest();
+
         harvestDetailRepository.delete(harvestDetail);
+
+        harvest.updateQuantity();
+        harvestRepository.save(harvest);
     }
 
     @Override

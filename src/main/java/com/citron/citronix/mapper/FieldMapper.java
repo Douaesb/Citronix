@@ -15,5 +15,6 @@ public interface FieldMapper {
     FieldDTO toDTO(Field field);
 
     @Mapping(target = "farm", ignore = true)
+    @Mapping(target = "trees", ignore = true)
     Field toEntity(FieldDTO fieldDTO);
 }
