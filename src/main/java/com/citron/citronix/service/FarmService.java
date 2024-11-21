@@ -1,6 +1,8 @@
 package com.citron.citronix.service;
 
 import com.citron.citronix.dto.FarmDTO;
+import com.citron.citronix.dto.FarmSearchDTO;
+import com.citron.citronix.entity.Farm;
 
 import java.util.List;
 
@@ -15,4 +17,6 @@ public interface FarmService {
     void deleteFarm(Long id);
 
     List<FarmDTO> getAllFarms();
+
+    List<FarmDTO> searchFarms(FarmSearchDTO criteria);
 }

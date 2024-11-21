@@ -1,6 +1,8 @@
 package com.citron.citronix.controller;
 
 import com.citron.citronix.dto.FarmDTO;
+import com.citron.citronix.dto.FarmSearchDTO;
+import com.citron.citronix.entity.Farm;
 import com.citron.citronix.service.FarmService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -80,5 +82,16 @@ public class FarmController {
     public ResponseEntity<List<FarmDTO>> getAllFarms() {
         List<FarmDTO> farms = farmService.getAllFarms();
         return new ResponseEntity<>(farms, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Search farms by multiple criteria", description = "This endpoint allows you to search farms based on multiple criteria.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Farms found"),
+            @ApiResponse(responseCode = "400", description = "Invalid search criteria")
+    })
+    @PostMapping("/search")
+    public ResponseEntity<List<FarmDTO>> searchFarms(@RequestBody FarmSearchDTO criteria) {
+        List<FarmDTO> farmDTOs = farmService.searchFarms(criteria);
+        return ResponseEntity.ok(farmDTOs);
     }
 }

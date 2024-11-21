@@ -48,11 +48,11 @@ public class Tree {
         Integer ageTree = getAge();
         if (ageTree != null) {
             if (ageTree < 3) {
-                return 2.5; // Young tree
+                return 2.5 * 4; // Young tree
             } else if (ageTree <= 10) {
-                return 12.0; // Mature tree
+                return 12.0 * 4; // Mature tree
             } else if (ageTree <= 20) {
-                return 20.0; // Old tree
+                return 20.0 * 4; // Old tree
             } else {
                 return 0.0; // Non-productive
             }

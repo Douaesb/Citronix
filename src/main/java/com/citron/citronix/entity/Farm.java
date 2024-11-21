@@ -32,7 +32,7 @@ public class Farm {
     private String location;
 
     @NotNull(message = "Area is required")
-    @DecimalMin(value = "0.1", inclusive = true, message = "Area must be at least 0.1 hectares")
+    @DecimalMin(value = "0.2", inclusive = true, message = "Area must be at least 0.2 hectares")
     @Column(nullable = false)
     private Double area;
 
