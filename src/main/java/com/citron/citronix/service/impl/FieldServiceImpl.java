@@ -63,7 +63,7 @@ public class FieldServiceImpl implements FieldService {
                 .name(fieldDTO.getName())
                 .area(fieldDTO.getArea())
                 .farm(farm)
-                .build();
+                .maxTreesAllowed(fieldDTO.getMaxTreesAllowed()).build();
 
         Field savedField = fieldRepository.save(updatedField);
         return fieldMapper.toDTO(savedField);

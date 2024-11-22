@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class SaleServiceImpl implements SaleService {
 
     private final SaleRepository saleRepository;
-    private final HarvestRepository harvestRepository;  // Added HarvestRepository
+    private final HarvestRepository harvestRepository;
     private final SaleMapper saleMapper;
 
     @Autowired

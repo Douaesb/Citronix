@@ -14,13 +14,11 @@ public interface HarvestDetailRepository extends JpaRepository<HarvestDetail, Lo
     List<HarvestDetail> findByTreeId(Long treeId);
     List<HarvestDetail> findByHarvestId(Long harvestId);
 
-    @Query("""
-        SELECT COUNT(hd) > 0
-        FROM HarvestDetail hd
-        WHERE hd.tree.id = :treeId
-        AND hd.harvest.season = :season
-        AND YEAR(hd.harvest.date) = :year
-    """)
+    @Query("SELECT COUNT(hd) > 0 " +
+            "FROM HarvestDetail hd " +
+            "WHERE hd.tree.id = :treeId " +
+            "AND hd.harvest.season = :season " +
+            "AND YEAR(hd.harvest.date) = :year")
     boolean isTreeAlreadyHarvested(@Param("treeId") Long treeId, @Param("season") Season season, @Param("year") int year);
 
 }
